@@ -1,0 +1,139 @@
+/* Startup and pointer effects, kept separate from the recovered desktop styles. */
+.boot-screen { position:fixed; inset:0; z-index:99999; display:grid; place-items:center; background:#2e4146; color:#eed8a1; transition:opacity .45s ease, visibility .45s ease; font-family:Mono,monospace; }
+.boot-screen.is-done { opacity:0; visibility:hidden; pointer-events:none; }
+.boot-inner { width:min(360px,calc(100vw - 56px)); }
+.boot-brand { font-size:18px; letter-spacing:.1em; font-weight:bold; margin:0 0 11px; }
+.boot-subtitle { font-size:11px; color:#d8cba8; margin:0 0 48px; letter-spacing:.08em; }
+.boot-status { font-size:11px; margin:0 0 14px; }
+.boot-progress { height:10px; padding:2px; border:1px solid #dfc993; }
+.boot-progress span { display:block; height:100%; width:0; background:#dfc993; animation:boot-fill 2s ease-out forwards; }
+.boot-bottom { display:flex; justify-content:space-between; align-items:center; margin-top:16px; color:#c3c4b2; font-size:10px; }
+.boot-skip { color:#e9d7ac; background:none; border:0; padding:8px; font:inherit; text-decoration:underline; text-underline-offset:3px; }
+@keyframes boot-fill { to { width:100%; } }
+.cursor-trail { display:none; }
+.pointer-dot { position:fixed; z-index:9998; left:0; top:0; width:4px; height:4px; background:#e9c47c; border:1px solid #2b302c; pointer-events:none; opacity:0; will-change:transform; }
+.pointer-spark { position:fixed; z-index:9999; width:6px; height:6px; background:#e5b875; border:1px solid #2b302c; pointer-events:none; animation:spark .45s ease-out forwards; }
+@keyframes spark { from { transform:translate(-50%,-50%); opacity:1; } to { transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))); opacity:0; } }
+@media (prefers-reduced-motion:reduce) { .boot-progress span { animation:none; width:100%; } .boot-screen { transition:none; } .pointer-dot,.pointer-spark { display:none; } }
+
+/* Desktop refinements */
+.desktop-intro, .about-content .signature { display:none; }
+.sticky p, h2, .reading-page h1, .reading-projects h3 { font-family:Sans,Arial,sans-serif; letter-spacing:-.025em; }
+h2 { font-size:clamp(30px,4vw,42px); font-weight:600; }
+.about-content h2 { font-size:clamp(32px,4vw,44px); font-weight:700; margin:12px 0 18px; }
+.about-content .typing-line { font:13px/1.6 Mono,monospace!important; color:var(--muted); min-height:2em; margin:0 0 18px; }
+.typing-caret { color:var(--accent); animation:caret-blink 1s steps(2,start) infinite; }
+@keyframes caret-blink { 50% { opacity:0; } }
+.window:not(.maximized) { max-height:max(150px,calc(100dvh - var(--window-top, 55px) - 137px)); }
+.window:not(.maximized) .window-content { max-height:max(116px,calc(100dvh - var(--window-top, 55px) - 171px)); }
+.window.maximized { top:15px!important; height:calc(100dvh - 145px)!important; max-height:calc(100dvh - 145px)!important; }
+.window.maximized .window-content { max-height:calc(100dvh - 180px); }
+@media (max-width:699px) {
+  .window:not(.maximized) { max-height:calc(100dvh - 160px); }
+  .window:not(.maximized) .window-content { max-height:calc(100dvh - 195px); }
+  .window.maximized { top:10px!important; height:calc(100dvh - 105px)!important; max-height:calc(100dvh - 105px)!important; }
+  .window.maximized .window-content { max-height:calc(100dvh - 140px); }
+  .top-tools time { display:block; }
+  .about-content h2 { font-size:34px; }
+}
+@media (prefers-reduced-motion:reduce) { .typing-caret { animation:none; } }
+
+/* Compact desktop shortcuts and contact card */
+.desktop-icons { top:clamp(8px,2.5vh,27px); bottom:92px; gap:clamp(0px,1vh,12px); justify-content:flex-start; overflow-y:auto; scrollbar-width:thin; }
+.desktop-icon { flex:0 1 80px; min-height:0; gap:4px; padding:5px 3px; text-decoration:none; }
+.desktop-icon .icon { width:clamp(30px,5vh,43px); height:clamp(30px,5vh,43px); flex:none; }
+.contact-card { max-width:600px; }
+.contact-identity { display:flex; align-items:center; gap:16px; margin:14px 0 20px; }
+.contact-avatar { display:grid; place-items:center; flex:none; width:62px; height:62px; border:1px solid var(--ink); box-shadow:3px 3px 0 var(--shadow); border-radius:6px; background:var(--note); color:#292e2a; font:700 22px Sans,Arial,sans-serif; }
+.contact-identity h2 { margin:0 0 5px; font-size:30px; line-height:1.1; }
+.contact-identity p { margin:0; color:var(--muted); font:11px/1.4 Mono,monospace; }
+.contact-details { border-top:1px dashed var(--muted); padding-top:11px; }
+.contact-row { display:flex; align-items:center; gap:12px; min-height:43px; font:12px/1.5 Mono,monospace; }
+.contact-row a { color:var(--ink); overflow-wrap:anywhere; text-decoration:none; }
+.contact-row a:hover { color:var(--accent); text-decoration:underline; }
+.contact-symbol { color:var(--accent); font-weight:bold; font-size:18px; flex:none; width:22px; text-align:center; }
+.copy-email { margin-left:auto; padding:5px 8px; border:1px solid var(--ink); border-radius:3px; background:var(--paper); color:var(--ink); font:9px Mono,monospace; white-space:nowrap; }
+.contact-actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:20px; }
+.contact-resume { background:var(--paper); color:var(--ink); }
+@media(max-width:699px) { .desktop-icons { top:10px; bottom:85px; gap:0; } .desktop-icon { flex-basis:68px; padding:3px; } .desktop-icon .icon { width:34px; height:34px; } .contact-row { font-size:10px; gap:7px; } .contact-identity h2 { font-size:26px; } }
+
+/* Larger shortcuts, dock response and desktop entrance */
+.desktop-icons { gap:clamp(2px,1vh,10px); }
+.desktop-icon { flex:0 1 96px; width:118px; }
+.desktop-icon .icon { width:clamp(37px,7vh,57px); height:clamp(37px,7vh,57px); }
+.dock button { transition:transform .2s cubic-bezier(.2,1.3,.3,1), background-color .2s; }
+@media (hover:hover) and (pointer:fine) { .dock button:hover { transform:translateY(-9px); } }
+.desktop-ready .topbar { animation:bar-enter .4s ease-out both; }
+.desktop-ready .dock { animation:dock-enter .55s .2s cubic-bezier(.2,1.3,.3,1) both; }
+.desktop-ready .sticky { animation:note-enter .5s .25s ease-out both; }
+.desktop-ready .desktop-icon { animation:icon-enter .4s cubic-bezier(.2,1.4,.3,1) both; }
+.desktop-ready .desktop-icon:nth-child(1) { animation-delay:.08s; }
+.desktop-ready .desktop-icon:nth-child(2) { animation-delay:.16s; }
+.desktop-ready .desktop-icon:nth-child(3) { animation-delay:.24s; }
+.desktop-ready .desktop-icon:nth-child(4) { animation-delay:.32s; }
+.desktop-ready .desktop-icon:nth-child(5) { animation-delay:.40s; }
+.desktop-ready .window { animation:window-in .32s .12s cubic-bezier(.2,1.3,.3,1) both; }
+@keyframes bar-enter { from { opacity:0; transform:translateY(-12px) } to { opacity:1; transform:none } }
+@keyframes dock-enter { from { opacity:0; transform:translate(-50%,25px) } to { opacity:1; transform:translate(-50%,0) } }
+@keyframes note-enter { from { opacity:0; transform:translateY(12px) rotate(1deg) scale(.98) } to { opacity:1; transform:rotate(1deg) scale(1) } }
+@keyframes icon-enter { from { opacity:0; transform:translateY(12px) scale(.88) } to { opacity:1; transform:none } }
+.terminal-body form { gap:6px; }
+.terminal-body input { width:100%; }
+@media(max-width:699px) {
+  .desktop { min-height:100dvh; overflow:hidden; }
+  .desktop-icons { top:10px; bottom:80px; gap:2px; }
+  .desktop-icon { flex:0 1 82px; width:78px; }
+  .desktop-icon .icon { width:clamp(36px,6.5vh,50px); height:clamp(36px,6.5vh,50px); }
+  .window:not(.maximized) { left:auto!important; top:auto!important; left:var(--window-left,10px)!important; top:var(--window-top,55px)!important; max-height:calc(100dvh - var(--window-top,55px) - 94px); }
+  .window:not(.maximized) .window-content { max-height:calc(100dvh - var(--window-top,55px) - 128px); }
+  .dock { max-width:calc(100vw - 16px); overflow-x:auto; overflow-y:hidden; scrollbar-width:none; }
+  .terminal-body form { flex-wrap:wrap; }
+  .terminal-body input { flex:1 1 100%; }
+}
+@media (prefers-reduced-motion:reduce) {
+ .desktop-ready .topbar,.desktop-ready .dock,.desktop-ready .sticky,.desktop-ready .desktop-icon,.desktop-ready .window { animation:none; }
+ .dock button { transition:none; }
+}
+
+/* Animated desktop texture and compact music player. */
+.desktop { background:radial-gradient(circle,var(--desktop-dot,#ffffff36) 1.3px,transparent 1.65px) 0 0/24px 24px,var(--desk); animation:desktop-drift 32s linear infinite; }
+[data-theme=paper] .desktop { --desktop-dot:#303b3c42; }
+[data-theme=midnight] .desktop { --desktop-dot:#e5d8b44d; }
+@keyframes desktop-drift { to { background-position:24px 24px,0 0; } }
+.radio-control { position:relative; }
+.radio-panel { position:absolute; z-index:1100; right:0; top:calc(100% + 8px); width:242px; padding:13px; background:var(--paper); color:var(--ink); border:1px solid var(--ink); border-radius:5px; box-shadow:4px 5px 0 var(--shadow); font:11px/1.4 Mono,monospace; }
+.radio-head { display:flex; align-items:center; justify-content:space-between; font-weight:bold; letter-spacing:.05em; }
+.radio-head button { border:0; background:transparent; color:var(--ink); font:18px/1 Sans,Arial; padding:0 3px; }
+.radio-caption { margin:7px 0 10px; color:var(--muted); font-size:10px; }
+.radio-stations { border-top:1px solid var(--bar); padding-top:5px; }
+.radio-option { display:flex; justify-content:space-between; width:100%; padding:6px 7px; border:0; background:transparent; color:var(--ink); text-align:left; font:11px Mono,monospace; }
+.radio-option:hover,.radio-option.active { background:var(--bar); }
+.radio-controls { display:flex; align-items:center; gap:12px; margin-top:10px; padding-top:10px; border-top:1px solid var(--bar); }
+.radio-play { border:1px solid var(--ink); background:var(--note); color:#292e2a; padding:7px 8px; font:10px Mono,monospace; white-space:nowrap; }
+.radio-controls label { display:flex; flex-direction:column; gap:3px; font-size:9px; color:var(--muted); flex:1; min-width:0; }
+.radio-controls input { width:100%; height:12px; accent-color:var(--accent); }
+.radio-foot { margin:9px 0 0; color:var(--muted); font:9px/1.4 Mono,monospace; }
+@media(max-width:699px) { .radio-panel { position:fixed; top:43px; right:8px; width:min(242px,calc(100vw - 16px)); } .radio-toggle { font-size:8px; } }
+@media (prefers-reduced-motion:reduce) { .desktop { animation:none; } }
+
+/* The Now note links and small, clearly labeled project demonstrations. */
+.sticky .now-link { display:block; padding:3px 0; border:0; color:#292e2a; background:none; text-align:left; font:11px/1.35 Sans,Arial,sans-serif; white-space:normal; }
+.sticky .now-link:hover { text-decoration:underline; text-underline-offset:3px; }
+.titlebar button { transition:transform .16s ease,background-color .16s ease,color .16s ease; }
+@media (hover:hover) { .titlebar button:hover { transform:translateY(-2px); } .titlebar:hover { filter:brightness(1.025); } }
+@media (prefers-reduced-motion:reduce) { .titlebar button { transition:none; } }
+.contact-github { height:18px; width:22px; padding:0 2px; }
+
+.project-art.logs { background:#263b3b; color:#e9d8ae; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; }
+.log-mark { border:1px solid #d5bd87; padding:5px 12px; font:28px Mono,monospace; }
+.project-art.logs small { font:9px Mono,monospace; }
+.project-actions { display:flex; flex-wrap:wrap; gap:10px; }
+.project-source { background:var(--paper); color:var(--ink); }
+
+/* Align reading-mode project artwork at the top of every card. */
+.reading-projects > button {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+}
