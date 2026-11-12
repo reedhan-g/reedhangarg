@@ -27,7 +27,7 @@ const help = [
  'Themes: vintage, paper, midnight. Use Tab to complete and ↑/↓ for history.'
 ];
 export default function Terminal({open,theme,setTheme}) {
- const [lines,setLines]=useState(['ReedhanOS [Version 1.0]','A small simulated terminal. Type help to explore.','']);
+ const [lines,setLines]=useState(['Reedhan.OS [Version 1.0]','A small simulated terminal. Type help to explore.','']);
  const [input,setInput]=useState('');
  const history=useRef([]), historyAt=useRef(0), output=useRef(null), field=useRef(null);
  useEffect(()=>{output.current?.scrollTo(0,output.current.scrollHeight)},[lines]);

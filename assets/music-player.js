@@ -9,19 +9,29 @@ const stations=[
  {id:'night',name:'Ambient · Atmosphere 2',file:'ambient-atmosphere-2.mp3'}
 ];
 export default function MusicPlayer(){
- const [shown,show]=useState(false),[station,setStation]=useState(()=>{try {const saved=localStorage.getItem('reedhan-radio-station');return stations.some(s=>s.id===saved)?saved:'off'}catch{return 'off'}}),[playing,setPlaying]=useState(false),[volume,setVolume]=useState(()=>{try {const v=localStorage.getItem('reedhan-radio-volume');return v===null?.28:Math.max(0,Math.min(1,Number(v)))}catch{return .28}}),[error,setError]=useState('');
- const player=useRef(null),root=useRef(null),generation=useRef(0);
+ const [shown,show]=useState(false),[station,setStation]=useState(()=>{try {const saved=localStorage.getItem('reedhan-radio-station');return stations.some(s=>s.id===saved)?saved:'lofi'}catch{return 'lofi'}}),[playing,setPlaying]=useState(false),[volume,setVolume]=useState(()=>{try {const v=localStorage.getItem('reedhan-radio-volume');return v===null?.28:Math.max(0,Math.min(1,Number(v)))}catch{return .28}}),[error,setError]=useState('');
+ const player=useRef(null),root=useRef(null),generation=useRef(0),autoplayPending=useRef(false);
  if(!player.current){player.current=new Audio();player.current.loop=true;player.current.preload='none'}
  useEffect(()=>{const audio=player.current;return()=>{generation.current++;audio.pause();audio.removeAttribute('src');audio.load()}},[]);
  useEffect(()=>{function close(e){if(root.current&&!root.current.contains(e.target))show(false)}function key(e){if(e.key==='Escape')show(false)}document.addEventListener('pointerdown',close);document.addEventListener('keydown',key);return()=>{document.removeEventListener('pointerdown',close);document.removeEventListener('keydown',key)}},[]);
- async function play(id){
+ async function play(id, automatic=false){
   const track=stations.find(s=>s.id===id), audio=player.current, request=++generation.current;
   if(!track?.file)return;
   setError('');audio.pause();audio.src=new URL('../music/'+track.file,import.meta.url).href;audio.volume=volume;audio.currentTime=0;
-  try{await audio.play();if(request===generation.current)setPlaying(true)}catch(e){if(request===generation.current){setPlaying(false);setError('Unable to play this track. Please try again.')}}
+  try{await audio.play();if(request===generation.current){autoplayPending.current=false;setPlaying(true)}}catch(e){if(request===generation.current){setPlaying(false);autoplayPending.current=automatic&&e.name==='NotAllowedError';setError(autoplayPending.current?'Tap anywhere to start music.':'Unable to play this track. Please try again.')}}
  }
- function choose(id){setStation(id);try{localStorage.setItem('reedhan-radio-station',id)}catch{}if(id==='off'){generation.current++;player.current.pause();setPlaying(false);setError('')}else play(id)}
- async function toggle(){if(playing){generation.current++;player.current.pause();setPlaying(false);return}let id=station==='off'?'lofi':station;setStation(id);try{localStorage.setItem('reedhan-radio-station',id)}catch{};const audio=player.current;if(audio.src&&id===station){let request=++generation.current;try{setError('');await audio.play();if(request===generation.current)setPlaying(true)}catch{if(request===generation.current)setError('Unable to play this track. Please try again.')}}else play(id)}
+ // First visitors get music; a saved Off choice is respected. If the browser
+ // blocks audible autoplay, start on the first unrelated click or key press.
+ useEffect(()=>{
+  if(station==='off')return;
+  let active=true;
+  const begin=event=>{if(!active||!autoplayPending.current||root.current?.contains(event.target))return;autoplayPending.current=false;play(station,true)};
+  play(station,true);
+  document.addEventListener('click',begin);document.addEventListener('keydown',begin);
+  return()=>{active=false;autoplayPending.current=false;document.removeEventListener('click',begin);document.removeEventListener('keydown',begin)};
+ },[]);
+ function choose(id){autoplayPending.current=false;setStation(id);try{localStorage.setItem('reedhan-radio-station',id)}catch{}if(id==='off'){generation.current++;player.current.pause();setPlaying(false);setError('')}else play(id)}
+ async function toggle(){autoplayPending.current=false;if(playing){generation.current++;player.current.pause();setPlaying(false);return}let id=station==='off'?'lofi':station;setStation(id);try{localStorage.setItem('reedhan-radio-station',id)}catch{};const audio=player.current;if(audio.src&&id===station){let request=++generation.current;try{setError('');await audio.play();if(request===generation.current)setPlaying(true)}catch{if(request===generation.current)setError('Unable to play this track. Please try again.')}}else play(id)}
  return h('div',{className:'radio-control',ref:root},[
  h('button',{className:'top-chip radio-toggle','aria-expanded':shown,'aria-label':'Music player'+(playing?', playing':', paused'),onClick:()=>show(!shown),key:'open'},playing?'♫ MUSIC':'♬ MUSIC'),
  shown&&h('div',{className:'radio-panel',role:'group','aria-label':'Music player',key:'panel'},[
