@@ -1,0 +1,40 @@
+/* Reading remains reachable on narrow screens, even when desktop menus collapse. */
+.topbar .reading-toggle { display: flex; }
+.reading-view {
+  position: fixed; inset: 0; z-index: 1200; overflow-y: auto;
+  background: var(--desk); color: var(--ink); -webkit-overflow-scrolling: touch;
+}
+.reading-document {
+  width: min(100%, 780px); min-height: 100%; margin: 0 auto;
+  padding: 38px clamp(22px, 5vw, 44px) 72px; background: var(--paper);
+  font-family: Sans, Arial, sans-serif; overflow-wrap: anywhere;
+}
+.reading-back { margin-bottom: 30px; }
+.reading-document h1 { margin: 0 0 22px; font: 700 clamp(36px, 6vw, 52px)/1.12 Sans, Arial, sans-serif; letter-spacing: -.035em; }
+.reading-document p { margin: 8px 0; font-size: 15px; line-height: 1.75; }
+.reading-intro { font-size: 17px !important; }
+.reading-links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 15px 0; }
+.reading-document a { text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
+.reading-section { margin-top: 42px; }
+.reading-document .reading-section h2 { margin: 0 0 22px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); font: 700 25px/1.2 Sans, Arial, sans-serif; letter-spacing: -.02em; }
+.reading-section h3 { margin: 18px 0 4px; font: 700 16px/1.4 Sans, Arial, sans-serif; }
+.reading-project { margin: 0 0 29px; }
+.reading-document .reading-project-tags { color: var(--muted); font: 12px/1.6 Mono, monospace; }
+/* Keep the small project artwork readable in compact rows. */
+.project-grid .project-art.logs, .project-grid .project-art.igts { gap: 3px; padding: 6px; }
+.project-grid .project-art.logs .log-mark, .project-grid .project-art.igts .igts-mark { position: static; transform: none; font-size: 30px; line-height: 1; }
+.project-grid .project-art.logs b, .project-grid .project-art.igts b { position: static; max-width: 100%; font-size: 8px; line-height: 1.2; text-align: center; letter-spacing: .04em; }
+.project-grid .project-art.logs small, .project-grid .project-art.igts small { display: none; }
+@media (max-width: 699px) {
+  .topbar { gap: 4px; padding-left: 7px; padding-right: 7px; }
+  .top-tools { gap: 3px; }
+  .topbar .top-chip { padding-left: 5px; padding-right: 5px; }
+  .reading-document { padding: 28px 20px 60px; }
+  .reading-back { min-height: 44px; }
+}
+
+/* Use a drawn arrow so the mark does not depend on a missing font glyph. */
+.project-grid .project-art.igts .igts-mark {
+  display: block; width: 28px; height: 28px; font-size: 0;
+  background: center / contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28 28'%3E%3Cpath d='M6 22 21 7M10 7h11v11' fill='none' stroke='%23f3dec0' stroke-width='2.5' stroke-linecap='square'/%3E%3C/svg%3E");
+}
